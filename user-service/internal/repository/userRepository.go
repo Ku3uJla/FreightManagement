@@ -26,6 +26,12 @@ func (r *UserRepository) Create(ctx context.Context, user *model.User) error {
 	return r.db.Create(user).Error
 }
 
+func (r *UserRepository) GetByLogin(ctx context.Context, login string) (*model.User, error) {
+	var user model.User
+	err := r.db.Where("login = ?", login).First(&user).Error
+	return &user, err
+}
+
 func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*model.User, error) {
 	var user model.User
 	err := r.db.Where("email = ?", email).First(&user).Error

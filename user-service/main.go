@@ -17,9 +17,13 @@ func main() {
 
 	userStore := repository.NewUserRepository(db)
 	userService := service.NewUserService(userStore)
-	userContoller := controller.NewUserController(userService)
+	userController := controller.NewUserController(userService)
 
-	routes.UserRoutes(router, userContoller)
+	authService := service.NewAuthService(userStore)
+	authController := controller.NewAuthController(authService)
+	routes.UserRoutes(router, userController)
+	routes.AuthRoutes(router, authController)
+
 	router.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{"message": "user-service"})
 	})

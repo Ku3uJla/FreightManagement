@@ -1,8 +1,15 @@
 package model
 
+import "time"
+
 type User struct {
-	User_ID  int    `gorm:"primaryKey;unique" json:"id"`
-	Name     string `gorm:"size:100;not null" json:"name"`
-	Email    string `gorm:"size:100;not null;unique" json:"email"`
-	Password string `gorm:"size:100;not null" json:"password"`
+	ID         int       `gorm:"type:int;primaryKey" json:"id"`
+	Role       int       `gorm:"type:int" json:"role"`
+	Phone      string    `gorm:"size:255;not null" json:"phone"`
+	Email      string    `gorm:"size:255;not null" json:"email"`
+	Password   string    `gorm:"size:255;not null" json:"-"`
+	Name       string    `gorm:"size:255" json:"name"`
+	Login      string    `gorm:"size:255;not null;unique" json:"login"`
+	DateCreate time.Time `gorm:"autoCreateTime" json:"dateCreate"`
+	DateUpdate time.Time `gorm:"autoUpdateTime" json:"dateUpdate"`
 }
