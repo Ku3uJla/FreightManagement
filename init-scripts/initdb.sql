@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"role" INTEGER,
 	"phone" VARCHAR(255) NOT NULL,
 	"email" VARCHAR(255) NOT NULL,
-	"password" VARCHAR(255),
+	"password" VARCHAR(255) NOT NULL,
 	"full_name" VARCHAR(255),
 	"login" VARCHAR(255) NOT NULL CHECK(LENGTH(login) > 3),
 	"date_create" TIMESTAMP NOT NULL,
@@ -130,8 +130,8 @@ ON "managers" ("user_id");
 ALTER TABLE "managers"
 ADD FOREIGN KEY("user_id") REFERENCES "users"("id")
 ON UPDATE NO ACTION ON DELETE NO ACTION;
-ALTER TABLE "users"
-ADD FOREIGN KEY("id") REFERENCES "driver"("user_id")
+ALTER TABLE "driver"
+ADD FOREIGN KEY("user_id") REFERENCES "users"("id")
 ON UPDATE NO ACTION ON DELETE NO ACTION;
 ALTER TABLE "driver_auto"
 ADD FOREIGN KEY("driver_id") REFERENCES "driver"("id")

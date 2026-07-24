@@ -16,12 +16,24 @@ services:
             - backend
     
     user-app:
-        build: user-service
+        build: ./user-service
         depends_on:
             - db
         networks:
             - backend
         env_file:
-            - db.env
+            - .env
+        ports:
+            - "8080:8080"
+    resource-app:
+        build: ./resource-service
+        depends_on:
+            - db
+        networks:
+            - backend
+        env_file:
+            - .env
+        ports:
+            - "8080:8080"        
 networks:
     backend:
