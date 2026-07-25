@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"user-service/internal/filters"
-	"user-service/internal/repository/model"
+	"resource-service/internal/filters"
+	"resource-service/internal/repository/model"
 
-	"user-service/internal/service"
+	"resource-service/internal/service"
 
 	"github.com/gin-gonic/gin"
 )
@@ -115,11 +115,3 @@ func (h *AutoHandler) CreateAuto(c *gin.Context) {
 	}
 	c.JSON(http.StatusCreated, gin.H{"message": "auto created", "id": auto.ID}) // предполагаем, что ID заполняется после создания
 }
-
-// Регистрация маршрутов (можно вынести в отдельную функцию)
-//func (h *AutoHandler) RegisterRoutes(r *gin.RouterGroup) {
-//	r.GET("/autos/:id", h.GetAutoByID)
-//	r.GET("/autos", h.GetAutosWithFilter)
-//	r.PUT("/autos/:id/status", h.UpdateAutoStatus)
-//	r.POST("/autos", h.CreateAuto)
-//}

@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	filters "user-service/internal/filters"
-	"user-service/internal/repository"
-	"user-service/internal/repository/model"
+	"resource-service/internal/filters"
+	"resource-service/internal/repository"
+	"resource-service/internal/repository/model"
 )
 
 type AutoService struct {

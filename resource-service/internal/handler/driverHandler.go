@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"user-service/internal/filters"
-	"user-service/internal/repository/model"
-	"user-service/internal/service"
+	"resource-service/internal/filters"
+	"resource-service/internal/repository/model"
+	"resource-service/internal/service"
 
 	"github.com/gin-gonic/gin"
 )

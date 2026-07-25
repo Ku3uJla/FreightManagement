@@ -2,8 +2,8 @@ package repository
 
 import (
 	"context"
-	filters "user-service/internal/filters"
-	"user-service/internal/repository/model"
+	"resource-service/internal/filters"
+	"resource-service/internal/repository/model"
 
 	"gorm.io/gorm"
 )

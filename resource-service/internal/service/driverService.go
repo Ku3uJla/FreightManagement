@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 	"errors"
-	"user-service/internal/filters"
-	"user-service/internal/repository"
-	"user-service/internal/repository/model"
+	"resource-service/internal/filters"
+	"resource-service/internal/repository"
+	"resource-service/internal/repository/model"
 
 	"gorm.io/gorm"
 )
