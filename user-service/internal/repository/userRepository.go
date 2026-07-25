@@ -46,6 +46,6 @@ func (r *UserRepository) ExistsByEmail(ctx context.Context, email string) bool {
 
 func (r *UserRepository) GetByID(ctx context.Context, id string) (*model.User, error) {
 	var user model.User
-	err := r.db.Where("id_user = ?", id).Find(&user).Error
+	err := r.db.Where("id = ?", id).Find(&user).Error
 	return &user, err
 }
