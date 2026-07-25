@@ -2,16 +2,12 @@ package repository
 
 import (
 	"context"
+
+	filters "user-service/internal/filters"
 	"user-service/internal/repository/model"
 
 	"gorm.io/gorm"
 )
-
-type AutoFilter struct {
-	Capacity        *int
-	LiftingCapacity *int
-	Status          *int
-}
 
 type AutoRepository struct {
 	db *gorm.DB
@@ -39,7 +35,7 @@ func (r *AutoRepository) GetAutoByID(ctx context.Context, id int) (*model.Auto, 
 	return &auto, err
 }
 
-func (r *AutoRepository) GetAutosByFilter(ctx context.Context, filter AutoFilter) ([]model.Auto, error) {
+func (r *AutoRepository) GetAutosByFilter(ctx context.Context, filter filters.AutoFilter) (*[]model.Auto, error) {
 	var autos []model.Auto
 	query := r.db.WithContext(ctx).Model(&model.Auto{})
 	if filter.Capacity != nil {
@@ -55,7 +51,7 @@ func (r *AutoRepository) GetAutosByFilter(ctx context.Context, filter AutoFilter
 	if err != nil {
 		return nil, err
 	}
-	return autos, nil
+	return &autos, nil
 }
 
 func (r *AutoRepository) UpdateStatusAuto(ctx context.Context, autoID int, status int) error {

@@ -2,15 +2,11 @@ package repository
 
 import (
 	"context"
+	filters "user-service/internal/filters"
 	"user-service/internal/repository/model"
 
 	"gorm.io/gorm"
 )
-
-type DriverFilter struct {
-	Status   *int
-	Category *string
-}
 
 type DriverRepository struct {
 	db *gorm.DB
@@ -28,7 +24,7 @@ func (r *DriverRepository) NewDriver(ctx context.Context, driver *model.Driver) 
 	return nil
 }
 
-func (r *DriverRepository) NewDriverCategory(ctx *context.Context, driverCategory *model.DriverCategory) error {
+func (r *DriverRepository) NewDriverCategory(ctx context.Context, driverCategory *model.DriverCategory) error {
 	err := r.db.Model(&model.DriverCategory{}).Create(driverCategory).Error
 	if err != nil {
 		return err
@@ -54,7 +50,7 @@ func (r *DriverRepository) GetDriverCategoriesByDriverID(ctx context.Context, Dr
 	return &driverCategories, err
 }
 
-func (r *DriverRepository) GetDriversByFilter(ctx context.Context, filter *DriverFilter) (*[]model.Driver, error) {
+func (r *DriverRepository) GetDriversByFilter(ctx context.Context, filter filters.DriverFilter) (*[]model.Driver, error) {
 	var drivers []model.Driver
 	query := r.db.WithContext(ctx).Model(&model.Driver{})
 	if filter.Status != nil {
