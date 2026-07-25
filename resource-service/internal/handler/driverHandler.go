@@ -139,13 +139,3 @@ func (h *DriverHandler) UpdateDriverStatus(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "driver status updated"})
 }
-
-// RegisterRoutes регистрирует маршруты для DriverHandler
-func (h *DriverHandler) RegisterRoutes(r *gin.RouterGroup) {
-	r.POST("/drivers", h.CreateDriver)
-	r.POST("/drivers/categories", h.CreateDriverCategory)
-	r.GET("/drivers/:id", h.GetDriverByID)
-	r.GET("/drivers/:id/categories", h.GetDriverCategories)
-	r.GET("/drivers", h.GetDriversByFilter)
-	r.PUT("/drivers/:id/status", h.UpdateDriverStatus)
-}

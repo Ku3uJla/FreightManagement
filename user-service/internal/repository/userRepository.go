@@ -23,7 +23,7 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 }
 
 func (r *UserRepository) Create(ctx context.Context, user *model.User) error {
-	return r.db.Create(user).Error
+	return r.db.Model(&model.User{}).Create(user).Error
 }
 
 func (r *UserRepository) GetByLogin(ctx context.Context, login string) (*model.User, error) {

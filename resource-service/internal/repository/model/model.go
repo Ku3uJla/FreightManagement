@@ -19,12 +19,12 @@ type DriverCategory struct {
 }
 
 type Auto struct {
-	ID               int       `gorm:"type:int;primaryKey" json:"id"`
+	ID               int       `gorm:"primaryKey;autoIncrement" json:"id"`
 	Status           int       `gorm:"type:integer" json:"status"`
-	Capacity         int       `gorm:"type:integer;not_null"`
-	LiftingCapacity  int       `gorm:"type:integer;not_null"`
-	Number           string    `gorm:"size:10"`
-	RequiredCategory string    `gorm:"size:10"`
+	Capacity         int       `gorm:"type:integer;not null" json:"capacity" binding:"required"`
+	LiftingCapacity  int       `gorm:"type:integer;not null" json:"lifting_capacity" binding:"required"`
+	Number           string    `gorm:"size:10" json:"number" binding:"required"`
+	RequiredCategory string    `gorm:"size:10" json:"required_category" binding:"required"`
 	DateCreate       time.Time `gorm:"autoCreateTime" json:"date_create"`
 	DateUpdate       time.Time `gorm:"autoUpdateTime" json:"date_update"`
 }

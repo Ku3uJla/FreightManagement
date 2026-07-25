@@ -41,6 +41,7 @@ func (s *AuthContoller) SignUp(ctx *gin.Context) {
 	ctx.ShouldBindJSON(&user)
 	if err := s.AuthService.SignUp(ctx.Request.Context(), user.Login, user.Email, user.Password); err != nil {
 		ctx.JSON(403, gin.H{"error": err})
+		return
 	}
 	ctx.JSON(200, gin.H{"message": "Signed UP"})
 }

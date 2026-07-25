@@ -19,6 +19,7 @@ func (s *UserContoller) GetByID(ctx *gin.Context) {
 	user, err := s.UserService.GetUser(ctx.Request.Context(), id)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": err})
+		return
 	}
 	ctx.JSON(200, gin.H{"message": user})
 }
