@@ -7,13 +7,12 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-func CreateToken(id string, role int) (string, error) {
+func CreateToken(id int) (string, error) {
 	key := []byte("private-key")
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"ID":   id,
-		"role": role,
-		"exp":  time.Now().Add(time.Hour * 24).Unix(),
+		"ID":  id,
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	})
 	return token.SignedString(key)
 }

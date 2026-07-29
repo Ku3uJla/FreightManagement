@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"user-service/internal/features"
+	"auth-service/internal/features"
 
 	"github.com/gin-gonic/gin"
 )

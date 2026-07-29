@@ -1,27 +1,33 @@
 package main
 
 import (
+	"auth-service/internal/controller"
+	"auth-service/internal/repository"
+	"auth-service/internal/repository/db"
+	"auth-service/internal/routes"
+	"auth-service/internal/service"
 	"log"
-	"user-service/internal/controller"
-	"user-service/internal/repository"
-	"user-service/internal/repository/db"
-	"user-service/internal/routes"
-	"user-service/internal/service"
+
+	pb "auth-service/proto/userpb"
 
 	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
 	db := db.InitDB()
 	router := gin.Default()
+	gRPCaddr := "localhost:50051"
+	conn, err := grpc.NewClient(gRPCaddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("failed to connect to gRPC server: %v", err)
 
-	userStore := repository.NewUserRepository(db)
-	userService := service.NewUserService(userStore)
-	userController := controller.NewUserController(userService)
-
-	authService := service.NewAuthService(userStore)
-	authController := controller.NewAuthController(authService)
-	routes.UserRoutes(router, userController)
+	}
+	userClient := pb.NewUserServiceClient(conn)
+	authStore := repository.NewAuthRepository(db)
+	authSrv := service.NewAuthService(authStore, userClient)
+	authController := controller.NewAuthController(authSrv)
 	routes.AuthRoutes(router, authController)
 
 	router.GET("/", func(ctx *gin.Context) {

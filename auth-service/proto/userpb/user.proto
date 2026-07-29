@@ -5,8 +5,8 @@ package user;
 
 option go_package = "user-service/proto/userpb";
 
-service User {
-  rpc CreateUser (CreateUserRequest) returns (CreateUserReply);
+service UserService {
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse){}
 }
 
 
@@ -14,6 +14,6 @@ message CreateUserRequest {
   int64 id = 1;
 }
 
-message CreateUserReply {
+message CreateUserResponse {
   bool success = 1;
 }

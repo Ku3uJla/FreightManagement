@@ -1,47 +1,75 @@
 package service
 
 import (
+	"auth-service/internal/features"
+	"auth-service/internal/repository"
+	"auth-service/internal/repository/model"
+	pb "auth-service/proto/userpb"
 	"context"
 	"errors"
-	"strconv"
-	"user-service/internal/features"
-	"user-service/internal/repository"
-	"user-service/internal/repository/model"
 )
 
-type AuthService struct {
-	userRepository *repository.UserRepository
+type AuthService interface {
+	LoginByLogin(ctx context.Context, login, password string) (int, error)
+	LoginByEmail(ctx context.Context, email, password string) (int, error)
+	SignUp(ctx context.Context, login, email, password string) error
+}
+type authService struct {
+	authRepo   *repository.AuthRepository
+	userClient pb.UserServiceClient
 }
 
-func NewAuthService(UserRepository *repository.UserRepository) *AuthService {
-	return &AuthService{UserRepository}
+func NewAuthService(authRepository *repository.AuthRepository, userClient pb.UserServiceClient) *authService {
+	return &authService{authRepo: authRepository,
+		userClient: userClient}
 }
 
-func (s *AuthService) Login(ctx context.Context, email, password string) (string, int, error) {
-	if !s.userRepository.ExistsByEmail(ctx, email) {
-		return "", -1, errors.New("Почта указана не верно")
-	}
-	user, err := s.userRepository.GetByEmail(ctx, email)
+func (s *authService) LoginByEmail(ctx context.Context, email, password string) (int, error) {
+	user, err := s.authRepo.GetByEmail(ctx, email)
 	if err != nil {
-		return "", -1, err
+		return -1, err
 	}
-	if features.ComparePassword(password, user.Password) {
-		return "", -1, errors.New("Неверный пароль")
+	if !features.ComparePassword(password, user.Password) {
+		return -1, errors.New("Wrong login or password")
 	}
 
-	ID := strconv.Itoa(user.ID)
-	return ID, user.Role, nil
+	return user.ID, nil
 }
 
-func (s *AuthService) SignUp(ctx context.Context, login, email, password string) error {
-	if s.userRepository.ExistsByEmail(ctx, email) {
+func (s *authService) LoginByLogin(ctx context.Context, login, password string) (int, error) {
+	user, err := s.authRepo.GetByLogin(ctx, login)
+	if err != nil {
+		return -1, err
+	}
+	if !features.ComparePassword(password, user.Password) {
+		return -1, errors.New("Wrong login or password")
+	}
+
+	return user.ID, nil
+}
+
+func (s *authService) SignUp(ctx context.Context, login, email, password string) error {
+	user := &model.Auth{
+		Login: login,
+		Email: email,
+	}
+
+	if s.authRepo.ExistsByEmail(ctx, email) {
 		return errors.New("Почта уже занята")
 	}
 	hashedpassword, err := features.HashPassword(password)
 	if err != nil {
 		return err
 	}
-	err = s.userRepository.Create(ctx, &model.User{Login: login, Email: email, Password: hashedpassword})
+	user.Password = hashedpassword
+	err = s.authRepo.Create(ctx, user)
+	if err != nil {
+		return err
+	}
+	status, err := s.userClient.CreateUser(ctx, &pb.CreateUserRequest{Id: int64(user.ID)})
+	if !status.Success {
+		return errors.New("Ошибка передачи")
+	}
 	if err != nil {
 		return err
 	}
