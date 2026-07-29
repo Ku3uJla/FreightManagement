@@ -23,29 +23,15 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 }
 
 func (r *UserRepository) Create(ctx context.Context, user *model.User) error {
-	return r.db.Model(&model.User{}).Create(user).Error
+	return r.db.WithContext(ctx).Model(&model.User{}).Create(user).Error
 }
 
-func (r *UserRepository) GetByLogin(ctx context.Context, login string) (*model.User, error) {
+func (r *UserRepository) GetByID(ctx context.Context, id int) (*model.User, error) {
 	var user model.User
-	err := r.db.Where("login = ?", login).First(&user).Error
+	err := r.db.WithContext(ctx).Model(&model.User{}).Where("id = ?", id).Find(&user).Error
 	return &user, err
 }
 
-func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*model.User, error) {
-	var user model.User
-	err := r.db.Where("email = ?", email).First(&user).Error
-	return &user, err
-}
-
-func (r *UserRepository) ExistsByEmail(ctx context.Context, email string) bool {
-	var count int64
-	r.db.Model(&model.User{}).Where("email = ?", email).Count(&count)
-	return count > 0
-}
-
-func (r *UserRepository) GetByID(ctx context.Context, id string) (*model.User, error) {
-	var user model.User
-	err := r.db.Where("id = ?", id).Find(&user).Error
-	return &user, err
+func (r *UserRepository) UpdateRole(ctx context.Context, id, status int) error {
+	return r.db.WithContext(ctx).Model(&model.User{}).Where("id = ?", id).Update("status", status).Error
 }

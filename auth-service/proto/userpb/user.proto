@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package user;
+
+
+option go_package = "user-service/proto/userpb";
+
+service User {
+  rpc CreateUser (CreateUserRequest) returns (CreateUserReply);
+}
+
+
+message CreateUserRequest {
+  int64 id = 1;
+}
+
+message CreateUserReply {
+  bool success = 1;
+}

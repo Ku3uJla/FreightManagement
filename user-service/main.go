@@ -2,33 +2,78 @@ package main
 
 import (
 	"log"
+	"net"
+
 	"user-service/internal/controller"
 	"user-service/internal/repository"
 	"user-service/internal/repository/db"
 	"user-service/internal/routes"
 	"user-service/internal/service"
 
+	pb "user-service/proto/userpb"
+
 	"github.com/gin-gonic/gin"
+
+	"google.golang.org/grpc"
 )
 
 func main() {
-	db := db.InitDB()
-	router := gin.Default()
 
-	userStore := repository.NewUserRepository(db)
+	database := db.InitDB()
+
+	userStore := repository.NewUserRepository(database)
+
 	userService := service.NewUserService(userStore)
+
 	userController := controller.NewUserController(userService)
 
-	authService := service.NewAuthService(userStore)
-	authController := controller.NewAuthController(authService)
-	routes.UserRoutes(router, userController)
-	routes.AuthRoutes(router, authController)
+	// HTTP
+	router := gin.Default()
 
-	router.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{"message": "user-service"})
-	})
+	routes.UserRoutes(
+		router,
+		userController,
+	)
 
-	if err := router.Run(":8080"); err != nil {
+	go func() {
+
+		if err := router.Run(":8080"); err != nil {
+			log.Fatal(err)
+		}
+
+	}()
+
+	// gRPC
+	go startGRPC(userController)
+
+	select {}
+}
+
+func startGRPC(
+	userController *controller.UserController,
+) {
+
+	listener, err := net.Listen(
+		"tcp",
+		":50051",
+	)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	grpcServer := grpc.NewServer()
+
+	pb.RegisterUserServiceServer(
+		grpcServer,
+		userController,
+	)
+
+	log.Println(
+		"gRPC server running :50051",
+	)
+
+	if err := grpcServer.Serve(listener); err != nil {
 		log.Fatal(err)
 	}
 }
