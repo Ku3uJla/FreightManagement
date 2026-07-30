@@ -7,6 +7,7 @@ import (
 	pb "auth-service/proto/userpb"
 	"context"
 	"errors"
+	"log"
 )
 
 type AuthService interface {
@@ -20,6 +21,9 @@ type authService struct {
 }
 
 func NewAuthService(authRepository *repository.AuthRepository, userClient pb.UserServiceClient) *authService {
+	if userClient == nil {
+		log.Fatal("Ошибка линка")
+	}
 	return &authService{authRepo: authRepository,
 		userClient: userClient}
 }
@@ -67,7 +71,9 @@ func (s *authService) SignUp(ctx context.Context, login, email, password string)
 		return err
 	}
 	status, err := s.userClient.CreateUser(ctx, &pb.CreateUserRequest{Id: int64(user.ID)})
+	log.Panicln("Create user вызван")
 	if !status.Success {
+		log.Fatalf("ошибка передечи")
 		return errors.New("Ошибка передачи")
 	}
 	if err != nil {

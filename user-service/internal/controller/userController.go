@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"log"
 	"strconv"
 	"user-service/internal/service"
 
@@ -60,7 +61,7 @@ func (h *UserController) CreateUser(
 ) (*pb.CreateUserResponse, error) {
 
 	userID := int(req.Id)
-
+	log.Println("CreateUser на serverе вызван")
 	err := h.UserService.CreateUser(ctx, userID)
 	if err != nil {
 		return &pb.CreateUserResponse{
@@ -69,5 +70,30 @@ func (h *UserController) CreateUser(
 	}
 	return &pb.CreateUserResponse{
 		Success: true,
+	}, nil
+}
+
+func (h *UserController) GetUser(
+	ctx context.Context,
+	req *pb.GetUserRequest,
+) (*pb.GetUserResponse, error) {
+	var fullname string
+	var role int64
+	userID := int(req.Id)
+	model, err := h.UserService.GetUser(ctx, userID)
+
+	if model.FullName != nil {
+		fullname = *model.FullName
+	}
+	if model.Role != nil {
+		role = int64(*model.Role)
+	}
+	if err != nil {
+		return &pb.GetUserResponse{}, err
+	}
+	return &pb.GetUserResponse{
+		Role:     role,
+		Phone:    model.Phone,
+		FullName: fullname,
 	}, nil
 }

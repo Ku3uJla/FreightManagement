@@ -1,6 +1,22 @@
 version: "3.8"
 
 services:
+    rabbitmq:
+        image: rabbitmq:4.3-alpine
+        hostname: rabbitmq
+        ports:
+            - "5672:5672"
+        networks:
+            - backend
+        environment:
+            RABBITMQ_DEFAULT_USER: admin
+            RABBITMQ_DEFAULT_PASS: admin
+        healthcheck:
+            test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+            interval: 10s
+            timeout: 5s
+            retries: 5    
+
     db:
         image: postgres:14
         environment:
@@ -12,6 +28,7 @@ services:
         volumes:
             - ./postgres_data:/var/lib/postgresql/data
             - ./init-scripts:/docker-entrypoint-initdb.d
+        
         networks:
             - backend
     
@@ -25,6 +42,7 @@ services:
             - .env
         ports:
             - "8080:8080"
+            - "50051:50051"
     resource-app:
         build: ./resource-service
         depends_on:
@@ -35,13 +53,38 @@ services:
             - .env
         ports:
             - "8081:8081"
-    odrer-app:
+    order-app:
         build: ./order-service
         depends_on:
             - db
         networks:
             - backend
         ports:
-            - "8082:8082"       
+            - "8082:8082"
+            - "50052:50052"
+    auth-app:
+        build: ./auth-service
+        depends_on:
+            db:
+            user-app:
+            rabbitmq:
+                condition: service_healthy
+        env_file:
+            - .env
+        environment:
+            - USER_APP_URL=user-app:50051
+        networks:
+            - backend
+        ports:
+            - "8083:8083"
+    notification-app:
+        build: ./notification-service
+        depends_on:
+            rabbitmq:
+                condition: service_healthy
+        environment:
+            - RABBITMQ_URL=amqp://admin:admin@rabbitmq:5672/
+                        
 networks:
     backend:
+        driver: bridge

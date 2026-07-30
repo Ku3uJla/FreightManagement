@@ -7,6 +7,7 @@ import (
 	"auth-service/internal/routes"
 	"auth-service/internal/service"
 	"log"
+	"os"
 
 	pb "auth-service/proto/userpb"
 
@@ -18,23 +19,31 @@ import (
 func main() {
 	db := db.InitDB()
 	router := gin.Default()
-	gRPCaddr := "localhost:50051"
+	gRPCaddr := os.Getenv("USER_APP_URL")
+	log.Println(gRPCaddr)
 	conn, err := grpc.NewClient(gRPCaddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if conn == nil {
+		log.Fatalf("failed to connect to gRPC server: %v", err)
+	}
 	if err != nil {
 		log.Fatalf("failed to connect to gRPC server: %v", err)
 
 	}
 	userClient := pb.NewUserServiceClient(conn)
+	if userClient == nil {
+		log.Fatalf("failed to connect to gRPC server: %v", err)
+	}
 	authStore := repository.NewAuthRepository(db)
 	authSrv := service.NewAuthService(authStore, userClient)
 	authController := controller.NewAuthController(authSrv)
 	routes.AuthRoutes(router, authController)
 
 	router.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{"message": "user-service"})
+		ctx.JSON(200, gin.H{"message": "auth-service"})
 	})
 
-	if err := router.Run(":8080"); err != nil {
+	if err := router.Run(":8083"); err != nil {
 		log.Fatal(err)
 	}
+	log.Println("auth-service работает")
 }

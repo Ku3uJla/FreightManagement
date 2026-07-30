@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.34.1
 // 	protoc        v7.35.1
-// source: user-service/proto/userpb/user.proto
+// source: proto/userpb/user.proto
 
 package userpb
 
@@ -31,7 +31,7 @@ type CreateUserRequest struct {
 func (x *CreateUserRequest) Reset() {
 	*x = CreateUserRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_user_service_proto_userpb_user_proto_msgTypes[0]
+		mi := &file_proto_userpb_user_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -44,7 +44,7 @@ func (x *CreateUserRequest) String() string {
 func (*CreateUserRequest) ProtoMessage() {}
 
 func (x *CreateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_user_service_proto_userpb_user_proto_msgTypes[0]
+	mi := &file_proto_userpb_user_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +57,7 @@ func (x *CreateUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateUserRequest.ProtoReflect.Descriptor instead.
 func (*CreateUserRequest) Descriptor() ([]byte, []int) {
-	return file_user_service_proto_userpb_user_proto_rawDescGZIP(), []int{0}
+	return file_proto_userpb_user_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *CreateUserRequest) GetId() int64 {
@@ -78,7 +78,7 @@ type CreateUserResponse struct {
 func (x *CreateUserResponse) Reset() {
 	*x = CreateUserResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_user_service_proto_userpb_user_proto_msgTypes[1]
+		mi := &file_proto_userpb_user_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -91,7 +91,7 @@ func (x *CreateUserResponse) String() string {
 func (*CreateUserResponse) ProtoMessage() {}
 
 func (x *CreateUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_user_service_proto_userpb_user_proto_msgTypes[1]
+	mi := &file_proto_userpb_user_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -104,7 +104,7 @@ func (x *CreateUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateUserResponse.ProtoReflect.Descriptor instead.
 func (*CreateUserResponse) Descriptor() ([]byte, []int) {
-	return file_user_service_proto_userpb_user_proto_rawDescGZIP(), []int{1}
+	return file_proto_userpb_user_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *CreateUserResponse) GetSuccess() bool {
@@ -114,45 +114,43 @@ func (x *CreateUserResponse) GetSuccess() bool {
 	return false
 }
 
-var File_user_service_proto_userpb_user_proto protoreflect.FileDescriptor
+var File_proto_userpb_user_proto protoreflect.FileDescriptor
 
-var file_user_service_proto_userpb_user_proto_rawDesc = []byte{
-	0x0a, 0x24, 0x75, 0x73, 0x65, 0x72, 0x2d, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x70, 0x62, 0x2f, 0x75, 0x73, 0x65, 0x72,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x04, 0x75, 0x73, 0x65, 0x72, 0x22, 0x23, 0x0a, 0x11,
-	0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69,
-	0x64, 0x22, 0x2e, 0x0a, 0x12, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65,
-	0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73,
-	0x73, 0x32, 0x50, 0x0a, 0x0b, 0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
-	0x12, 0x41, 0x0a, 0x0a, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x12, 0x17,
-	0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x43,
-	0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x00, 0x42, 0x1b, 0x5a, 0x19, 0x75, 0x73, 0x65, 0x72, 0x2d, 0x73, 0x65, 0x72, 0x76,
-	0x69, 0x63, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x70, 0x62,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+var file_proto_userpb_user_proto_rawDesc = []byte{
+	0x0a, 0x17, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x70, 0x62, 0x2f, 0x75,
+	0x73, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x04, 0x75, 0x73, 0x65, 0x72, 0x22,
+	0x23, 0x0a, 0x11, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x03,
+	0x52, 0x02, 0x69, 0x64, 0x22, 0x2e, 0x0a, 0x12, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73,
+	0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75,
+	0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63,
+	0x63, 0x65, 0x73, 0x73, 0x32, 0x50, 0x0a, 0x0b, 0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x12, 0x41, 0x0a, 0x0a, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65,
+	0x72, 0x12, 0x17, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55,
+	0x73, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x75, 0x73, 0x65,
+	0x72, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x55, 0x73, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x0e, 0x5a, 0x0c, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
+	0x75, 0x73, 0x65, 0x72, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_user_service_proto_userpb_user_proto_rawDescOnce sync.Once
-	file_user_service_proto_userpb_user_proto_rawDescData = file_user_service_proto_userpb_user_proto_rawDesc
+	file_proto_userpb_user_proto_rawDescOnce sync.Once
+	file_proto_userpb_user_proto_rawDescData = file_proto_userpb_user_proto_rawDesc
 )
 
-func file_user_service_proto_userpb_user_proto_rawDescGZIP() []byte {
-	file_user_service_proto_userpb_user_proto_rawDescOnce.Do(func() {
-		file_user_service_proto_userpb_user_proto_rawDescData = protoimpl.X.CompressGZIP(file_user_service_proto_userpb_user_proto_rawDescData)
+func file_proto_userpb_user_proto_rawDescGZIP() []byte {
+	file_proto_userpb_user_proto_rawDescOnce.Do(func() {
+		file_proto_userpb_user_proto_rawDescData = protoimpl.X.CompressGZIP(file_proto_userpb_user_proto_rawDescData)
 	})
-	return file_user_service_proto_userpb_user_proto_rawDescData
+	return file_proto_userpb_user_proto_rawDescData
 }
 
-var file_user_service_proto_userpb_user_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_user_service_proto_userpb_user_proto_goTypes = []interface{}{
+var file_proto_userpb_user_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_userpb_user_proto_goTypes = []interface{}{
 	(*CreateUserRequest)(nil),  // 0: user.CreateUserRequest
 	(*CreateUserResponse)(nil), // 1: user.CreateUserResponse
 }
-var file_user_service_proto_userpb_user_proto_depIdxs = []int32{
+var file_proto_userpb_user_proto_depIdxs = []int32{
 	0, // 0: user.UserService.CreateUser:input_type -> user.CreateUserRequest
 	1, // 1: user.UserService.CreateUser:output_type -> user.CreateUserResponse
 	1, // [1:2] is the sub-list for method output_type
@@ -162,13 +160,13 @@ var file_user_service_proto_userpb_user_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_user_service_proto_userpb_user_proto_init() }
-func file_user_service_proto_userpb_user_proto_init() {
-	if File_user_service_proto_userpb_user_proto != nil {
+func init() { file_proto_userpb_user_proto_init() }
+func file_proto_userpb_user_proto_init() {
+	if File_proto_userpb_user_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_user_service_proto_userpb_user_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_userpb_user_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CreateUserRequest); i {
 			case 0:
 				return &v.state
@@ -180,7 +178,7 @@ func file_user_service_proto_userpb_user_proto_init() {
 				return nil
 			}
 		}
-		file_user_service_proto_userpb_user_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_proto_userpb_user_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CreateUserResponse); i {
 			case 0:
 				return &v.state
@@ -197,18 +195,18 @@ func file_user_service_proto_userpb_user_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_user_service_proto_userpb_user_proto_rawDesc,
+			RawDescriptor: file_proto_userpb_user_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_user_service_proto_userpb_user_proto_goTypes,
-		DependencyIndexes: file_user_service_proto_userpb_user_proto_depIdxs,
-		MessageInfos:      file_user_service_proto_userpb_user_proto_msgTypes,
+		GoTypes:           file_proto_userpb_user_proto_goTypes,
+		DependencyIndexes: file_proto_userpb_user_proto_depIdxs,
+		MessageInfos:      file_proto_userpb_user_proto_msgTypes,
 	}.Build()
-	File_user_service_proto_userpb_user_proto = out.File
-	file_user_service_proto_userpb_user_proto_rawDesc = nil
-	file_user_service_proto_userpb_user_proto_goTypes = nil
-	file_user_service_proto_userpb_user_proto_depIdxs = nil
+	File_proto_userpb_user_proto = out.File
+	file_proto_userpb_user_proto_rawDesc = nil
+	file_proto_userpb_user_proto_goTypes = nil
+	file_proto_userpb_user_proto_depIdxs = nil
 }
