@@ -1,19 +1,21 @@
 package service
 
 import (
+	"auth-service/dto"
 	"auth-service/internal/features"
 	"auth-service/internal/repository"
 	"auth-service/internal/repository/model"
 	pb "auth-service/proto/userpb"
 	"context"
 	"errors"
-	"log"
 )
 
 type AuthService interface {
 	LoginByLogin(ctx context.Context, login, password string) (int, error)
 	LoginByEmail(ctx context.Context, email, password string) (int, error)
-	SignUp(ctx context.Context, login, email, password string) error
+	SignUp(ctx context.Context, userReq dto.CreateAuthRequest) error
+	GetLogin(ctx context.Context, id int) (string, error)
+	GetEmail(ctx context.Context, id int) (string, error)
 }
 type authService struct {
 	authRepo   *repository.AuthRepository
@@ -21,9 +23,6 @@ type authService struct {
 }
 
 func NewAuthService(authRepository *repository.AuthRepository, userClient pb.UserServiceClient) *authService {
-	if userClient == nil {
-		log.Fatal("Ошибка линка")
-	}
 	return &authService{authRepo: authRepository,
 		userClient: userClient}
 }
@@ -52,16 +51,16 @@ func (s *authService) LoginByLogin(ctx context.Context, login, password string) 
 	return user.ID, nil
 }
 
-func (s *authService) SignUp(ctx context.Context, login, email, password string) error {
+func (s *authService) SignUp(ctx context.Context, userReq dto.CreateAuthRequest) error {
 	user := &model.Auth{
-		Login: login,
-		Email: email,
+		Login: userReq.Login,
+		Email: userReq.Email,
 	}
 
-	if s.authRepo.ExistsByEmail(ctx, email) {
+	if s.authRepo.ExistsByEmail(ctx, user.Email) {
 		return errors.New("Почта уже занята")
 	}
-	hashedpassword, err := features.HashPassword(password)
+	hashedpassword, err := features.HashPassword(user.Password)
 	if err != nil {
 		return err
 	}
@@ -70,14 +69,27 @@ func (s *authService) SignUp(ctx context.Context, login, email, password string)
 	if err != nil {
 		return err
 	}
-	status, err := s.userClient.CreateUser(ctx, &pb.CreateUserRequest{Id: int64(user.ID)})
-	log.Panicln("Create user вызван")
+	status, err := s.userClient.CreateUser(ctx, &pb.CreateUserRequest{Id: int64(user.ID), Email: userReq.Email, Phone: userReq.Phone, FullName: userReq.FullName})
 	if !status.Success {
-		log.Fatalf("ошибка передечи")
 		return errors.New("Ошибка передачи")
 	}
 	if err != nil {
 		return err
 	}
 	return nil
+}
+func (srv *authService) GetLogin(ctx context.Context, id int) (string, error) {
+	model, err := srv.authRepo.GetByID(ctx, id)
+	if err != nil {
+		return "", err
+	}
+	return model.Login, nil
+}
+
+func (srv *authService) GetEmail(ctx context.Context, id int) (string, error) {
+	model, err := srv.authRepo.GetByID(ctx, id)
+	if err != nil {
+		return "", err
+	}
+	return model.Email, nil
 }

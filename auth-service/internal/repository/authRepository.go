@@ -37,7 +37,7 @@ func (r *AuthRepository) ExistsByEmail(ctx context.Context, email string) bool {
 	return count > 0
 }
 
-func (r *AuthRepository) GetByID(ctx context.Context, id string) (*model.Auth, error) {
+func (r *AuthRepository) GetByID(ctx context.Context, id int) (*model.Auth, error) {
 	var user model.Auth
 	err := r.db.WithContext(ctx).Model(&model.Auth{}).Where("id = ?", id).Find(&user).Error
 	return &user, err

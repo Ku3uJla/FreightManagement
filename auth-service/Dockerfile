@@ -26,6 +26,7 @@ COPY --from=builder /app/main .
 
 # Expose port 8080
 EXPOSE 8083
+EXPOSE 50053
 
 # Run the Go app
 CMD ["./main"]

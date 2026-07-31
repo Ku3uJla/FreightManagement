@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"auth-service/dto"
 	"auth-service/internal/features"
 	"auth-service/internal/repository/model"
 	"auth-service/internal/service"
@@ -41,13 +42,13 @@ func (s *AuthController) Login(c *gin.Context) {
 	c.JSON(200, gin.H{"message": "logged"})
 }
 
-func (s *AuthController) SignUp(ctx *gin.Context) {
-	var user model.Auth
-	ctx.ShouldBindJSON(&user)
-	err := s.authService.SignUp(ctx.Request.Context(), user.Login, user.Email, user.Password)
+func (h *AuthController) SignUp(c *gin.Context) {
+	var user dto.CreateAuthRequest
+	c.ShouldBindJSON(&user)
+	err := h.authService.SignUp(c.Request.Context(), user)
 	if err != nil {
-		ctx.JSON(403, gin.H{"error": err})
+		c.JSON(403, gin.H{"error": err})
 		return
 	}
-	ctx.JSON(200, gin.H{"message": "Signed UP"})
+	c.JSON(200, gin.H{"message": "Signed UP"})
 }

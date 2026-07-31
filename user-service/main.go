@@ -4,11 +4,13 @@ import (
 	"log"
 	"net"
 
+	"os"
 	"user-service/internal/controller"
 	"user-service/internal/repository"
 	"user-service/internal/repository/db"
 	"user-service/internal/routes"
 	"user-service/internal/service"
+	"user-service/publisher"
 
 	pb "user-service/proto/userpb"
 
@@ -18,12 +20,19 @@ import (
 )
 
 func main() {
+	rabbitURL := os.Getenv("RABBITMQ_URL")
+
+	pub, err := publisher.NewUserPublisher(rabbitURL)
+	if err != nil {
+		log.Fatalf("Критическая ошибка: %v", err)
+	}
+	defer pub.Close()
 
 	database := db.InitDB()
 
 	userStore := repository.NewUserRepository(database)
 
-	userService := service.NewUserService(userStore)
+	userService := service.NewUserService(userStore, pub)
 
 	userController := controller.NewUserController(userService)
 
@@ -44,13 +53,13 @@ func main() {
 	}()
 
 	// gRPC
-	go startGRPC(userController)
+	go startGRPC(userService)
 
 	select {}
 }
 
 func startGRPC(
-	userController *controller.UserController,
+	userSrv service.UserService,
 ) {
 
 	listener, err := net.Listen(
@@ -63,10 +72,10 @@ func startGRPC(
 	}
 
 	grpcServer := grpc.NewServer()
-
+	userGrpcController := controller.NewUserGrpcController(userSrv)
 	pb.RegisterUserServiceServer(
 		grpcServer,
-		userController,
+		userGrpcController,
 	)
 
 	log.Println(

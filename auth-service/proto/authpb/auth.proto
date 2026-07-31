@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package auth;
+
+
+option go_package = "proto/authpb";
+
+service AuthService {
+  rpc GetEmail (GetUserRequest) returns (GetEmailResponse){}
+  rpc GetLogin (GetUserRequest) returns (GetLoginResponse){}
+}
+
+
+message GetUserRequest {
+  int64 id = 1;
+}
+
+message GetEmailResponse {
+  string email = 1;
+}
+message GetLoginResponse {
+  string Login = 1;  
+}

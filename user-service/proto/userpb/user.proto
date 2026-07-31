@@ -20,13 +20,17 @@ message GetUserRequest{
 }
 
 message GetUserResponse{
-  int64 role = 1;
+  string role = 1;
   string phone = 2;
   string full_name = 3;
+  string email = 4;
 }
 
 message CreateUserRequest {
   int64 id = 1;
+  string email = 2;
+  string full_name = 3;
+  string phone = 4;
 }
 
 message CreateUserResponse {

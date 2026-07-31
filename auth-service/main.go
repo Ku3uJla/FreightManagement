@@ -7,8 +7,10 @@ import (
 	"auth-service/internal/routes"
 	"auth-service/internal/service"
 	"log"
+	"net"
 	"os"
 
+	pb1 "auth-service/proto/authpb"
 	pb "auth-service/proto/userpb"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +22,9 @@ func main() {
 	db := db.InitDB()
 	router := gin.Default()
 	gRPCaddr := os.Getenv("USER_APP_URL")
-	log.Println(gRPCaddr)
+	if gRPCaddr == "" {
+		log.Fatalf("failed to extract user_app_url")
+	}
 	conn, err := grpc.NewClient(gRPCaddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if conn == nil {
 		log.Fatalf("failed to connect to gRPC server: %v", err)
@@ -41,9 +45,25 @@ func main() {
 	router.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{"message": "auth-service"})
 	})
-
+	go startGrpc(authSrv)
 	if err := router.Run(":8083"); err != nil {
 		log.Fatal(err)
 	}
-	log.Println("auth-service работает")
+
+	select {}
+
+}
+
+func startGrpc(authSrv service.AuthService) {
+	lis, err := net.Listen("tcp", ":50053")
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	s := grpc.NewServer()
+	grpcController := controller.NewAuthGrpcController(authSrv)
+	pb1.RegisterAuthServiceServer(s, grpcController)
+	log.Printf("server listening at %v", lis.Addr())
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve: %v", err)
+	}
 }

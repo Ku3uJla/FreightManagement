@@ -28,16 +28,27 @@ services:
         volumes:
             - ./postgres_data:/var/lib/postgresql/data
             - ./init-scripts:/docker-entrypoint-initdb.d
-        
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U admin -d freightmanagementdb"]
+            interval: 5s      # Как часто проверять
+            timeout: 5s       # Время ожидания ответа
+            retries: 5        # Количество неудачных попыток до статуса unhealthy
+            start_period: 10s # Задержка перед первой проверкой (дает время на инициализацию)
+                
         networks:
             - backend
     
     user-app:
         build: ./user-service
         depends_on:
-            - db
+            db:
+                condition: service_healthy
+            rabbitmq:
+                condition: service_healthy
         networks:
             - backend
+        environment:
+            - RABBITMQ_URL=amqp://admin:admin@rabbitmq:5672/
         env_file:
             - .env
         ports:
@@ -66,7 +77,9 @@ services:
         build: ./auth-service
         depends_on:
             db:
+                condition: service_healthy
             user-app:
+                condition: service_started
             rabbitmq:
                 condition: service_healthy
         env_file:
@@ -84,6 +97,8 @@ services:
                 condition: service_healthy
         environment:
             - RABBITMQ_URL=amqp://admin:admin@rabbitmq:5672/
+        networks:
+            - backend
                         
 networks:
     backend:
