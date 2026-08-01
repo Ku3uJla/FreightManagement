@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"order-service/internal/dto"
+	"order-service/dto"
 	"order-service/internal/repository/model"
 	"order-service/internal/service"
 
@@ -13,10 +13,10 @@ import (
 )
 
 type OrderHandler struct {
-	orderService *service.OrderService
+	orderService service.OrderService
 }
 
-func NewOrderHandler(orderService *service.OrderService) *OrderHandler {
+func NewOrderHandler(orderService service.OrderService) *OrderHandler {
 	return &OrderHandler{orderService: orderService}
 }
 
@@ -24,12 +24,13 @@ const DefaultPageSize = 20
 
 func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	var req dto.CreateOrderRequest
+	userID := c.MustGet("userID").(int)
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body: " + err.Error()})
 		return
 	}
 
-	order, err := h.orderService.CreateOrder(c.Request.Context(), &req)
+	order, err := h.orderService.CreateOrder(c.Request.Context(), userID, &req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

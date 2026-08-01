@@ -3,19 +3,19 @@ package model
 import "time"
 
 type Driver struct {
-	ID         int       `gorm:"type:int;primaryKey" json:"id"`
-	UserID     int       `gorm:"unique" json:"user_id"`
-	Status     int       `gorm:"type:integer" json:"status"`
-	DateCreate time.Time `gorm:"autoCreateTime" json:"date_create"`
-	DateUpdate time.Time `gorm:"autoUpdateTime" json:"date_update"`
+	ID        int       `gorm:"type:int;primaryKey" json:"id"`
+	UserID    int       `gorm:"unique" json:"user_id"`
+	Status    int       `gorm:"type:integer" json:"status"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"date_create"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"date_update"`
 }
 
 type DriverCategory struct {
-	ID         int       `gorm:"type:int;primaryKey" json:"id"`
-	DriverID   int       `gorm:"type:int;not_null"`
-	Category   string    `gorm:"size:10" json:"category"`
-	DateCreate time.Time `gorm:"autoCreateTime" json:"date_create"`
-	DateUpdate time.Time `gorm:"autoUpdateTime" json:"date_update"`
+	ID        int       `gorm:"type:int;primaryKey" json:"id"`
+	DriverID  int       `gorm:"type:int;not_null"`
+	Category  string    `gorm:"size:10" json:"category"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"date_create"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"date_update"`
 }
 
 type Auto struct {
@@ -25,8 +25,8 @@ type Auto struct {
 	LiftingCapacity  int       `gorm:"type:integer;not null" json:"lifting_capacity" binding:"required"`
 	Number           string    `gorm:"size:10" json:"number" binding:"required"`
 	RequiredCategory string    `gorm:"size:10" json:"required_category" binding:"required"`
-	DateCreate       time.Time `gorm:"autoCreateTime" json:"date_create"`
-	DateUpdate       time.Time `gorm:"autoUpdateTime" json:"date_update"`
+	CreatedAt        time.Time `gorm:"autoCreateTime" json:"date_create"`
+	UpdatedAt        time.Time `gorm:"autoUpdateTime" json:"date_update"`
 }
 
 type DriverAuto struct {
@@ -36,6 +36,6 @@ type DriverAuto struct {
 	AutoID     int `gorm:"type:int"`
 	Status     int `gorm:"type:integer" json:"status"`
 	DateFinish time.Time
-	DateCreate time.Time `gorm:"autoCreateTime" json:"date_create"`
-	DateUpdate time.Time `gorm:"autoUpdateTime" json:"date_update"`
+	CreatedAt  time.Time `gorm:"autoCreateTime" json:"date_create"`
+	UpdatedAt  time.Time `gorm:"autoUpdateTime" json:"date_update"`
 }

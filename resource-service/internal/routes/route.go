@@ -15,7 +15,7 @@ func DriverRoutes(r *gin.Engine, h *handler.DriverHandler) {
 	r.PUT("/drivers/:id/status", h.UpdateDriverStatus)
 }
 
-func AutoRoutes(r *gin.Engine, h *handler.AutoHandler) {
+func AutoRoutes(r *gin.Engine, h handler.AutoHandler) {
 	r.GET("/autos/:id", h.GetAutoByID)
 	r.GET("/autos", h.GetAutosWithFilter)
 	r.PUT("/autos/:id/status", h.UpdateAutoStatus)

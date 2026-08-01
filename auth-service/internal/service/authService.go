@@ -8,6 +8,7 @@ import (
 	pb "auth-service/proto/userpb"
 	"context"
 	"errors"
+	"log"
 )
 
 type AuthService interface {
@@ -57,25 +58,28 @@ func (s *authService) SignUp(ctx context.Context, userReq dto.CreateAuthRequest)
 		Email: userReq.Email,
 	}
 
-	if s.authRepo.ExistsByEmail(ctx, user.Email) {
-		return errors.New("Почта уже занята")
-	}
-	hashedpassword, err := features.HashPassword(user.Password)
+	hashedpassword, err := features.HashPassword(userReq.Password)
 	if err != nil {
 		return err
 	}
+
 	user.Password = hashedpassword
 	err = s.authRepo.Create(ctx, user)
 	if err != nil {
 		return err
 	}
-	status, err := s.userClient.CreateUser(ctx, &pb.CreateUserRequest{Id: int64(user.ID), Email: userReq.Email, Phone: userReq.Phone, FullName: userReq.FullName})
-	if !status.Success {
-		return errors.New("Ошибка передачи")
-	}
+
+	status, err := s.userClient.CreateUser(ctx, &pb.CreateUserRequest{Id: int64((*user).ID), Email: userReq.Email, Phone: userReq.Phone, FullName: userReq.FullName})
 	if err != nil {
+		log.Println(err)
 		return err
 	}
+
+	if !status.Success {
+		log.Println(err)
+		return errors.New("Ошибка передачи")
+	}
+
 	return nil
 }
 func (srv *authService) GetLogin(ctx context.Context, id int) (string, error) {

@@ -16,7 +16,6 @@ type UpdateOrderRequest struct {
 
 type CreateOrderRequest struct {
 	// Обязательные поля (должны быть переданы)
-	UserID          int `json:"user_id" binding:"required"`                // ID пользователя, создающего заказ
 	Capacity        int `json:"capacity" binding:"required,min=1"`         // Грузоподъёмность (обязательно, > 0)
 	LiftingCapacity int `json:"lifting_capacity" binding:"required,min=1"` // Грузоподъёмность (обязательно, > 0)
 

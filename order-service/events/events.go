@@ -3,33 +3,23 @@ package events
 import "time"
 
 const (
-	UserCreated  = "user.created"
-	OrderCreated = "order.created"
-	OrderUpdated = "order.updated"
-	DriverOrder  = "driver.order"
+	// Имя Exchange для всех бизнес-событий
+	ExchangeName = "app.events"
+
+	// Routing keys для заказов
+	OrderCreated  = "order.created"
+	OrderUpdated  = "order.updated"
+	OrderCanceled = "order.canceled"
 )
 
-type UserCreatedPayload struct {
-	UserID    string    `json:"user_id"`
-	Email     string    `json:"email"`
-	Name      string    `json:"name"`
-	CreatedAt time.Time `json:"created_at"`
-}
-
+// OrderPayload — структура данных события заказа
 type OrderPayload struct {
 	OrderID   string    `json:"order_id"`
 	UserID    string    `json:"user_id"`
-	UserEmail string    `json:"user_email"`
-	DriverID  string    `json:"driver_id,omitempty"`
-	Status    string    `json:"status"`
-	Amount    float64   `json:"amount"`
-	UpdatedAt time.Time `json:"updated_at"`
-}
-
-type DriverOrderPayload struct {
-	DriverID    string    `json:"driver_id"`
-	DriverEmail string    `json:"driver_email"`
-	OrderID     string    `json:"order_id"`
-	Message     string    `json:"message"`
-	AssignedAt  time.Time `json:"assigned_at"`
+	UserEmail string    `json:"user_email,omitempty"`
+	CargoType string    `json:"cargo_type,omitempty"`
+	Weight    float64   `json:"weight,omitempty"`
+	Price     float64   `json:"price"`
+	Status    string    `json:"status"` // "created", "in_progress", "completed", "canceled"
+	Timestamp time.Time `json:"timestamp"`
 }

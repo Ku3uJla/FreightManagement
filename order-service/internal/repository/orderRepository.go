@@ -3,32 +3,43 @@ package repository
 import (
 	"context"
 	"errors"
-	"order-service/internal/dto"
+	"order-service/dto"
 	"order-service/internal/repository/model"
 
 	"gorm.io/gorm"
 )
 
-type OrderRepository struct {
+type OrderRepository interface {
+	CreateOrder(ctx context.Context, order model.Order) error
+	UpdateOrder(ctx context.Context, id int, req *dto.UpdateOrderRequest) error
+	GetOrderByID(ctx context.Context, id int) (*model.Order, error)
+	GetList(ctx context.Context, filter *dto.OrderFilter, page, pageSize int) ([]model.Order, int64, error)
+	UpdateStatus(ctx context.Context, id int, status int) error
+	AssignManager(ctx context.Context, orderID int, managerID int) error
+	GetOrdersByUser(ctx context.Context, userID int, page, pageSize int) ([]model.Order, int64, error)
+	GetOrdersByDriver(ctx context.Context, driverID int, page, pageSize int) ([]model.Order, error)
+}
+
+type orderRepository struct {
 	db *gorm.DB
 }
 
-func NewOrderRepository(db *gorm.DB) *OrderRepository {
-	return &OrderRepository{db}
+func NewOrderRepository(db *gorm.DB) *orderRepository {
+	return &orderRepository{db}
 }
 
-func (r *OrderRepository) CreateOrder(ctx context.Context, order model.Order) error {
+func (r *orderRepository) CreateOrder(ctx context.Context, order model.Order) error {
 	return r.db.Model(&model.Order{}).Create(order).Error
 }
 
-func (r *OrderRepository) UpdateOrder(ctx context.Context, id int, req *dto.UpdateOrderRequest) error {
+func (r *orderRepository) UpdateOrder(ctx context.Context, id int, req *dto.UpdateOrderRequest) error {
 	if req == nil {
 		return errors.New("update request is empty")
 	}
 	return r.db.WithContext(ctx).Model(&model.Order{}).Where("id = ?", id).Updates(req).Error
 }
 
-func (r *OrderRepository) GetOrderByID(ctx context.Context, id int) (*model.Order, error) {
+func (r *orderRepository) GetOrderByID(ctx context.Context, id int) (*model.Order, error) {
 	var order model.Order
 	err := r.db.WithContext(ctx).Model(&model.Order{}).Where("id = ?", id).First(&order).Error
 	if err != nil {
@@ -38,7 +49,7 @@ func (r *OrderRepository) GetOrderByID(ctx context.Context, id int) (*model.Orde
 }
 
 // GetList с фильтрацией и пагинацией
-func (r *OrderRepository) GetList(ctx context.Context, filter *dto.OrderFilter, page, pageSize int) ([]model.Order, int64, error) {
+func (r *orderRepository) GetList(ctx context.Context, filter *dto.OrderFilter, page, pageSize int) ([]model.Order, int64, error) {
 	var orders []model.Order
 	var total int64
 
@@ -137,28 +148,28 @@ func (r *OrderRepository) GetList(ctx context.Context, filter *dto.OrderFilter, 
 	return orders, total, err
 }
 
-func (r *OrderRepository) UpdateStatus(ctx context.Context, id int, status int) error {
+func (r *orderRepository) UpdateStatus(ctx context.Context, id int, status int) error {
 	return r.db.WithContext(ctx).
 		Model(&model.Order{}).
 		Where("id = ?", id).
 		Update("status", status).Error
 }
 
-func (r *OrderRepository) AssignManager(ctx context.Context, orderID int, managerID int) error {
+func (r *orderRepository) AssignManager(ctx context.Context, orderID int, managerID int) error {
 	return r.db.WithContext(ctx).
 		Model(&model.Order{}).
 		Where("id = ?", orderID).
 		Update("manager_id", managerID).Error
 }
 
-func (r *OrderRepository) GetOrdersByUser(ctx context.Context, userID int, page, pageSize int) ([]model.Order, int64, error) {
+func (r *orderRepository) GetOrdersByUser(ctx context.Context, userID int, page, pageSize int) ([]model.Order, int64, error) {
 	filter := &dto.OrderFilter{
 		UserID: &userID,
 	}
 	return r.GetList(ctx, filter, page, pageSize)
 }
 
-func (r *OrderRepository) GetOrdersByDriver(ctx context.Context, driverID int, page, pageSize int) ([]model.Order, error) {
+func (r *orderRepository) GetOrdersByDriver(ctx context.Context, driverID int, page, pageSize int) ([]model.Order, error) {
 	var orders []model.Order
 	err := r.db.WithContext(ctx).
 		Joins("JOIN driver_auto ON driver_auto.order_id = orders.id").

@@ -46,9 +46,11 @@ func main() {
 		ctx.JSON(200, gin.H{"message": "auth-service"})
 	})
 	go startGrpc(authSrv)
-	if err := router.Run(":8083"); err != nil {
-		log.Fatal(err)
-	}
+	go func() {
+		if err := router.Run(":8083"); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	select {}
 

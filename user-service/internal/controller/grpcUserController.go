@@ -17,7 +17,7 @@ func NewUserGrpcController(srv service.UserService) *UserGrpcController {
 	return &UserGrpcController{UserService: srv}
 }
 
-func (h *UserController) CreateUser(
+func (h *UserGrpcController) CreateUser(
 	ctx context.Context,
 	req *pb.CreateUserRequest,
 ) (*pb.CreateUserResponse, error) {
@@ -37,7 +37,7 @@ func (h *UserController) CreateUser(
 	return &pb.CreateUserResponse{Success: true}, nil
 }
 
-func (h *UserController) GetUser(
+func (h *UserGrpcController) GetUser(
 	ctx context.Context,
 	req *pb.GetUserRequest,
 ) (*pb.GetUserResponse, error) {

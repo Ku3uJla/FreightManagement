@@ -12,16 +12,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AutoHandler struct {
-	autoService *service.AutoService
+type AutoHandler interface {
+	GetAutoByID(c *gin.Context)
+	GetAutosWithFilter(c *gin.Context)
+	UpdateAutoStatus(c *gin.Context)
+	CreateAuto(c *gin.Context)
+}
+type autoHandler struct {
+	autoService service.AutoService
 }
 
-func NewAutoHandler(autoService *service.AutoService) *AutoHandler {
-	return &AutoHandler{autoService: autoService}
+func NewAutoHandler(autoService service.AutoService) *autoHandler {
+	return &autoHandler{autoService: autoService}
 }
 
 // GetAutoByID GET /autos/:id
-func (h *AutoHandler) GetAutoByID(c *gin.Context) {
+func (h *autoHandler) GetAutoByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil || id <= 0 {
@@ -38,7 +44,7 @@ func (h *AutoHandler) GetAutoByID(c *gin.Context) {
 }
 
 // GetAutosWithFilter GET /autos?capacity=...&lifting_capacity=...&status=...
-func (h *AutoHandler) GetAutosWithFilter(c *gin.Context) {
+func (h *autoHandler) GetAutosWithFilter(c *gin.Context) {
 	var filter filters.AutoFilter
 
 	if capStr := c.Query("capacity"); capStr != "" {
@@ -73,7 +79,7 @@ func (h *AutoHandler) GetAutosWithFilter(c *gin.Context) {
 
 // UpdateAutoStatus PUT /autos/:id/status
 // Тело: { "status": 3 }
-func (h *AutoHandler) UpdateAutoStatus(c *gin.Context) {
+func (h *autoHandler) UpdateAutoStatus(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil || id <= 0 {
@@ -102,7 +108,7 @@ func (h *AutoHandler) UpdateAutoStatus(c *gin.Context) {
 
 // CreateAuto POST /autos
 // Тело: поля модели Auto
-func (h *AutoHandler) CreateAuto(c *gin.Context) {
+func (h *autoHandler) CreateAuto(c *gin.Context) {
 	var auto model.Auto
 	if err := c.ShouldBindJSON(&auto); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})

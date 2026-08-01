@@ -9,15 +9,22 @@ import (
 	"gorm.io/gorm"
 )
 
-type AutoRepository struct {
+type AutoRepository interface {
+	GetAutosID(ctx context.Context) ([]int, error)
+	GetAutoByID(ctx context.Context, id int) (*model.Auto, error)
+	GetAutosByFilter(ctx context.Context, filter filters.AutoFilter) (*[]model.Auto, error)
+	UpdateStatusAuto(ctx context.Context, autoID int, status int) error
+	CreateAuto(ctx context.Context, auto *model.Auto) error
+}
+type autoRepository struct {
 	db *gorm.DB
 }
 
-func NewAutoRepository(db *gorm.DB) *AutoRepository {
-	return &AutoRepository{db: db}
+func NewAutoRepository(db *gorm.DB) *autoRepository {
+	return &autoRepository{db: db}
 }
 
-func (r *AutoRepository) GetAutosID(ctx context.Context) ([]int, error) {
+func (r *autoRepository) GetAutosID(ctx context.Context) ([]int, error) {
 	var autoIDs []int
 	result := r.db.WithContext(ctx).Raw("SELECT id FROM auto").Scan(&autoIDs)
 	if result.Error != nil {
@@ -26,7 +33,7 @@ func (r *AutoRepository) GetAutosID(ctx context.Context) ([]int, error) {
 	return autoIDs, nil
 }
 
-func (r *AutoRepository) GetAutoByID(ctx context.Context, id int) (*model.Auto, error) {
+func (r *autoRepository) GetAutoByID(ctx context.Context, id int) (*model.Auto, error) {
 	var auto model.Auto
 	err := r.db.WithContext(ctx).Model(&model.Auto{}).Where(id).First(&auto).Error
 	if err != nil {
@@ -35,7 +42,7 @@ func (r *AutoRepository) GetAutoByID(ctx context.Context, id int) (*model.Auto, 
 	return &auto, err
 }
 
-func (r *AutoRepository) GetAutosByFilter(ctx context.Context, filter filters.AutoFilter) (*[]model.Auto, error) {
+func (r *autoRepository) GetAutosByFilter(ctx context.Context, filter filters.AutoFilter) (*[]model.Auto, error) {
 	var autos []model.Auto
 	query := r.db.WithContext(ctx).Model(&model.Auto{})
 	if filter.Capacity != nil {
@@ -54,7 +61,7 @@ func (r *AutoRepository) GetAutosByFilter(ctx context.Context, filter filters.Au
 	return &autos, nil
 }
 
-func (r *AutoRepository) UpdateStatusAuto(ctx context.Context, autoID int, status int) error {
+func (r *autoRepository) UpdateStatusAuto(ctx context.Context, autoID int, status int) error {
 	err := r.db.Model(&model.Auto{}).Where("id = ?", autoID).Update("status", status).Error
 	if err != nil {
 		return err
@@ -62,7 +69,7 @@ func (r *AutoRepository) UpdateStatusAuto(ctx context.Context, autoID int, statu
 	return nil
 }
 
-func (r *AutoRepository) CreateAuto(ctx context.Context, auto model.Auto) error {
+func (r *autoRepository) CreateAuto(ctx context.Context, auto *model.Auto) error {
 	err := r.db.Create(auto).Error
 	if err != nil {
 		return err

@@ -48,6 +48,7 @@ func (s *userService) UpdateRole(ctx context.Context, id, role int) error {
 }
 
 func (s *userService) CreateUser(ctx context.Context, user dto.CreateUserGrpcRequest) error {
+	log.Print("CreateUser был вызван", user)
 	// 1. Создаем модель для БД
 	newUser := &model.User{
 		ID:       user.ID,
