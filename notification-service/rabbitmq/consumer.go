@@ -73,7 +73,6 @@ func (c *SingleConsumer) StartListening(queueName string, routingKeys []string) 
 	return nil
 }
 
-// processEvent разбирает события и использует provider.Send(...)
 func (c *SingleConsumer) processEvent(routingKey string, body []byte) {
 	switch routingKey {
 
