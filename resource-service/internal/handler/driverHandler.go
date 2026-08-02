@@ -12,10 +12,10 @@ import (
 )
 
 type DriverHandler struct {
-	driverService *service.DriverService
+	driverService service.DriverService
 }
 
-func NewDriverHandler(driverService *service.DriverService) *DriverHandler {
+func NewDriverHandler(driverService service.DriverService) *DriverHandler {
 	return &DriverHandler{driverService: driverService}
 }
 
@@ -35,14 +35,18 @@ func (h *DriverHandler) CreateDriver(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "driver created", "id": driver.ID})
 }
 
-// CreateDriverCategory POST /drivers/categories
-// Тело: model.DriverCategory (содержит driver_id и category)
+// CreateDriverCategory POST /drivers/:id/categories
 func (h *DriverHandler) CreateDriverCategory(c *gin.Context) {
 	var category model.DriverCategory
+	driverID, err := strconv.Atoi(c.Param("driverID"))
+	if err != nil {
+		c.JSON(403, gin.H{"error": "not auth"})
+	}
 	if err := c.ShouldBindJSON(&category); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
 		return
 	}
+	category.DriverID = driverID
 
 	if err := h.driverService.CreateDriverCategory(c.Request.Context(), &category); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -123,13 +127,9 @@ func (h *DriverHandler) UpdateDriverStatus(c *gin.Context) {
 	var req struct {
 		Status int `json:"status"`
 	}
+
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
-		return
-	}
-	// Валидация статуса может быть также в сервисе, но дублируем здесь для раннего ответа
-	if req.Status < 1 || req.Status > 3 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "status must be 1, 2, or 3"})
 		return
 	}
 

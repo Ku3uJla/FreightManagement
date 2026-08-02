@@ -1,0 +1,11 @@
+{
+    "name": "Nginx Dev Environment",
+    "dockerFile": "Dockerfile.nginx",
+    "forwardPorts": [80],
+    "workspaceFolder": "/workspace",
+    "mounts": [
+        "source=${localWorkspaceFolder}/html,target=/usr/share/nginx/html,type=bind",
+        "source=${localWorkspaceFolder}/conf.d,target=/etc/nginx/conf.d,type=bind"
+    ],
+    "postStartCommand": "nginx -g 'daemon off;'"
+}

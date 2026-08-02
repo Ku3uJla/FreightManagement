@@ -10,38 +10,38 @@ import (
 	"gorm.io/gorm"
 )
 
-// DriverService — бизнес-слой для работы с водителями.
-type DriverService struct {
+type DriverService interface {
+	CreateDriver(ctx context.Context, driver *model.Driver) error
+	CreateDriverCategory(ctx context.Context, driverCategory *model.DriverCategory) error
+	GetDriverByID(ctx context.Context, id int) (*model.Driver, error)
+	GetDriverCategories(ctx context.Context, driverID int) ([]model.DriverCategory, error)
+	GetDriversByFilter(ctx context.Context, filter filters.DriverFilter) ([]model.Driver, error)
+	UpdateDriverStatus(ctx context.Context, id int, status int) error
+}
+type driverService struct {
 	repo *repository.DriverRepository
 }
 
-// NewDriverService создаёт новый экземпляр сервиса.
-func NewDriverService(repo *repository.DriverRepository) *DriverService {
-	return &DriverService{repo: repo}
+func NewDriverService(repo *repository.DriverRepository) *driverService {
+	return &driverService{repo: repo}
 }
 
-// CreateDriver создаёт нового водителя.
-// Можно добавить валидацию, проверку дубликатов и т.д.
-func (s *DriverService) CreateDriver(ctx context.Context, driver *model.Driver) error {
+func (s *driverService) CreateDriver(ctx context.Context, driver *model.Driver) error {
 	if driver == nil {
 		return errors.New("driver cannot be nil")
 	}
-	// Здесь можно добавить бизнес-правила, например, проверку, что номер телефона уникален.
 	return s.repo.NewDriver(ctx, driver)
 }
 
-// CreateDriverCategory добавляет категорию для водителя.
-func (s *DriverService) CreateDriverCategory(ctx context.Context, driverCategory *model.DriverCategory) error {
+func (s *driverService) CreateDriverCategory(ctx context.Context, driverCategory *model.DriverCategory) error {
 	if driverCategory == nil {
 		return errors.New("driver category cannot be nil")
 	}
-	// Можно дополнительно проверить, что водитель с таким driver_id существует,
-	// но это может делать репозиторий или база данных через внешний ключ.
+
 	return s.repo.NewDriverCategory(ctx, driverCategory)
 }
 
-// GetDriverByID возвращает водителя по ID.
-func (s *DriverService) GetDriverByID(ctx context.Context, id int) (*model.Driver, error) {
+func (s *driverService) GetDriverByID(ctx context.Context, id int) (*model.Driver, error) {
 	if id <= 0 {
 		return nil, errors.New("invalid driver id")
 	}
@@ -55,8 +55,7 @@ func (s *DriverService) GetDriverByID(ctx context.Context, id int) (*model.Drive
 	return driver, nil
 }
 
-// GetDriverCategories возвращает все категории водителя.
-func (s *DriverService) GetDriverCategories(ctx context.Context, driverID int) ([]model.DriverCategory, error) {
+func (s *driverService) GetDriverCategories(ctx context.Context, driverID int) ([]model.DriverCategory, error) {
 	if driverID <= 0 {
 		return nil, errors.New("invalid driver id")
 	}
@@ -69,9 +68,7 @@ func (s *DriverService) GetDriverCategories(ctx context.Context, driverID int) (
 	}
 	return *categoriesPtr, nil
 }
-
-// GetDriversByFilter возвращает список водителей по фильтрам.
-func (s *DriverService) GetDriversByFilter(ctx context.Context, filter filters.DriverFilter) ([]model.Driver, error) {
+func (s *driverService) GetDriversByFilter(ctx context.Context, filter filters.DriverFilter) ([]model.Driver, error) {
 	driversPtr, err := s.repo.GetDriversByFilter(ctx, filter)
 	if err != nil {
 		return nil, err
@@ -82,8 +79,7 @@ func (s *DriverService) GetDriversByFilter(ctx context.Context, filter filters.D
 	return *driversPtr, nil
 }
 
-// UpdateDriverStatus обновляет статус водителя.
-func (s *DriverService) UpdateDriverStatus(ctx context.Context, id int, status int) error {
+func (s *driverService) UpdateDriverStatus(ctx context.Context, id int, status int) error {
 	if id <= 0 {
 		return errors.New("invalid driver id")
 	}

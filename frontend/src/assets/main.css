@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+/* ==============================================================================
+   Freight Management — Global Styles (Tailwind CSS v4)
+   ============================================================================== */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: theme(--color-gray-50);
+  color: theme(--color-gray-900);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: theme(--color-gray-100);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: theme(--color-gray-300);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: theme(--color-gray-400);
+}
+
+/* ===== Animations ===== */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out both;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.25s ease-out both;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out both;
+}
+
+.animate-delay-100 {
+  animation-delay: 0.1s;
+}
+
+.animate-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animate-delay-300 {
+  animation-delay: 0.3s;
+}
+
+/* ===== Skeleton loading ===== */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    theme(--color-gray-100) 25%,
+    theme(--color-gray-200) 50%,
+    theme(--color-gray-100) 75%
+  );
+  background-size: 936px 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 8px;
+}
+
+/* ===== Utility: hide scrollbar for horizontal nav ===== */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

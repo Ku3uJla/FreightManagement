@@ -8,7 +8,7 @@ import (
 
 func DriverRoutes(r *gin.Engine, h *handler.DriverHandler) {
 	r.POST("/drivers", h.CreateDriver)
-	r.POST("/drivers/categories", h.CreateDriverCategory)
+	r.PUT("/drivers/:id/categories", h.CreateDriverCategory)
 	r.GET("/drivers/:id", h.GetDriverByID)
 	r.GET("/drivers/:id/categories", h.GetDriverCategories)
 	r.GET("/drivers", h.GetDriversByFilter)
